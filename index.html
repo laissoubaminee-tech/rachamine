@@ -18,63 +18,6 @@ body{
   color:#fff;
 }
 
-/* ===== المقدمة ===== */
-#introScreen {
-  position:fixed;
-  inset:0;
-  background:#ffe5ec; /* وردي حليبي */
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:50;
-}
-
-#introQuestion {
-  font-size:2rem;
-  font-weight:bold;
-  color:#555555; /* فضي داكن */
-  text-align:center;
-  margin-bottom:30px;
-  opacity:0;
-  animation: fadeInSlide 1s forwards;
-  animation-delay:0.5s;
-  text-shadow:0 0 10px #fff;
-  animation-iteration-count:1;
-  animation-fill-mode:forwards;
-}
-
-.introAnswer {
-  font-size:1.5rem;
-  color:#aa0000; /* أحمر دموي */
-  margin:0 15px;
-  padding:15px 25px;
-  border-radius:15px;
-  border:2px solid rgba(255,255,255,0.3);
-  cursor:pointer;
-  opacity:0;
-  animation: fadeInSlide 1s forwards;
-  animation-delay:1.5s;
-  transition: all 0.3s ease;
-  box-shadow:0 0 15px rgba(255,0,0,0.5);
-}
-
-.introAnswer:hover {
-  transform:scale(1.05);
-  box-shadow:0 0 25px rgba(255,0,0,0.7);
-}
-
-@keyframes fadeInSlide{
-  0% {opacity:0; transform:translateY(-20px);}
-  100% {opacity:1; transform:translateY(0);}
-}
-
-@keyframes pulseGlow{
-  0% {opacity:1; text-shadow:0 0 10px #fff;}
-  50% {opacity:0.85; text-shadow:0 0 25px #ffb3c6;}
-  100% {opacity:1; text-shadow:0 0 10px #fff;}
-}
-
 /* النجوم */
 .stars{
   position:fixed;
@@ -204,18 +147,26 @@ body{
   z-index:11;
 }
 
-#imagePhrase {
-  position:absolute;
-  color:#ff0000; /* أحمر قرمزي */
-  font-size:16px;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  opacity:0;
-  text-align:center;
-text-shadow:0 0 10px #ff4d7a;
-  animation: fadeIn 2s forwards;
-  animation-delay:2s;
+#imageCaption {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff1a4d;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0;
+  z-index: 12;
+  transition: opacity 2s ease;
+  animation: pulseGlow 2s infinite alternate;
+  margin-top: 10px;
+}
+
+@keyframes pulseGlow {
+  0% { transform: translateX(-50%) scale(1); text-shadow: 0 0 6px #ff1a4d; }
+  50% { transform: translateX(-50%) scale(1.05); text-shadow: 0 0 12px #ff4d79; }
+  100% { transform: translateX(-50%) scale(1); text-shadow: 0 0 6px #ff1a4d; }
 }
 
 .floatingHeart{
@@ -232,15 +183,71 @@ text-shadow:0 0 10px #ff4d7a;
   20%{opacity:1;}
   100%{transform:translateY(-120vh) scale(1.3);opacity:0;}
 }
+
+/* ===== مقدمة Intro Screen ===== */
+#introScreen {
+  position:fixed;
+  inset:0;
+  background:#ffe5ec; /* وردي حليبي كامل */
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:1000; /* أعلى من كل شيء */
+}
+
+#introQuestion {
+  font-size:2rem;
+  font-weight:bold;
+  color:#555555; /* فضي داكن */
+  text-align:center;
+  opacity:0;
+  animation: fadeInSlide 1s forwards;
+  animation-delay:0.5s;
+  text-shadow:0 0 10px #fff;
+  animation-fill-mode:forwards;
+  animation-iteration-count:1;
+}
+
+.
+introAnswer {
+  font-size:1.5rem;
+  color:#aa0000; /* أحمر دموي */
+  padding:12px 20px;
+  border-radius:15px;
+  border:2px solid rgba(255,255,255,0.3);
+  cursor:pointer;
+  opacity:0;
+  animation: fadeInSlide 1s forwards;
+  animation-delay:1.5s;
+  box-shadow:0 0 15px rgba(255,0,0,0.5);
+  transition: all 0.3s ease;
+}
+
+.introAnswer:hover {
+  transform:scale(1.05);
+  box-shadow:0 0 25px rgba(255,0,0,0.7);
+}
+
+@keyframes fadeInSlide{
+  0% {opacity:0; transform:translateY(-20px);}
+  100% {opacity:1; transform:translateY(0);}
+}
+
+@keyframes pulseGlowIntro{
+  0% {opacity:1; text-shadow:0 0 10px #fff;}
+  50% {opacity:0.85; text-shadow:0 0 25px #ffb3c6;}
+  100% {opacity:1; text-shadow:0 0 10px #fff;}
+}
 </style>
 </head>
 
 <body>
 
-<!-- ===== مقدمة السؤال ===== -->
+<!-- ===== مقدمة Intro Screen ===== -->
 <div id="introScreen">
   <div id="introQuestion">تحبيني؟!</div>
-  <div style="display:flex;">
+  <div style="display:flex; gap:30px; margin-top:20px;">
     <div class="introAnswer" id="answer1">نمووت عليك !!</div>
     <div class="introAnswer" id="answer2">نعشقك !!</div>
   </div>
@@ -258,29 +265,41 @@ text-shadow:0 0 10px #ff4d7a;
 
 <div id="overlay">
   <div id="floatingHeartsContainer"></div>
-  <img id="loveImage" src="my_photo.png">
-  <div id="imagePhrase">TV ES VII MINVTA MEA VLTIMA» أنتَ دقائقي السبع الأخيرة</div>
+  <div style="position: relative;">
+    <img id="loveImage" src="my_photo.png">
+    <div id="imageCaption">TV ES VII MINVTA MEA VLTIMA» أنتَ دقائقي السبع الأخيرة</div>
+  </div>
 </div>
 
 <script>
-
-/* تشغيل الموسيقى عند اختيار الإجابة */
+/* ===== مقدمة Intro Screen Script ===== */
 const introScreen = document.getElementById("introScreen");
-const bgMusic = document.getElementById("bgMusic");
+const introQuestion = document.getElementById("introQuestion");
 const answer1 = document.getElementById("answer1");
 const answer2 = document.getElementById("answer2");
-const introQuestion = document.getElementById("introQuestion");
+const bgMusic = document.getElementById("bgMusic"); // الموسيقى موجودة في الكود الأساسي
 
-function startMainPage(){
-  introScreen.style.display="none";
+function startMainPage() {
+  // اخفاء المقدمة تدريجيًا
+  introScreen.style.transition = "opacity 1s ease";
+  introScreen.style.opacity = "0";
+  setTimeout(()=>{ introScreen.style.display="none"; }, 1000);
+
+  // تشغيل الموسيقى
   bgMusic.play();
-  introQuestion.style.animation="pulseGlow 2s infinite";
+
+  // تشغيل كل شيء في الكود الأساسي بعد اختيار الإجابة
+  // هذا يترك الكود الأساسي كما هو دون أي تغيير
 }
 
+// عند الضغط على أي إجابة، تنطلق الشاشة الرئيسية
 answer1.addEventListener("click", startMainPage);
 answer2.addEventListener("click", startMainPage);
 
-/* الباقي من كودك الأصلي يبدأ هنا بدون أي تعديل */
+
+/* ===== كودك الأساسي يبدأ من هنا دون تغيير ===== */
+
+/* تشغيل الموسيقى */
 window.addEventListener("load", () => {
   let playPromise = bgMusic.play();
   if (playPromise !== undefined) {
@@ -305,6 +324,7 @@ for(let i=0;i<80;i++){
 
 /* كلمات القلب */
 const heart=document.getElementById("heart");
+
 const totalWords=120;
 const scale=11;
 const speed=0.004;
@@ -345,7 +365,7 @@ animateWords();
 const poemLines=[
   "أحببتكِ حبّا لو تُترجمين بعضُه",
   "لذابت حدود الأرضِ في أنفاسي",
-  "فأنا فنيتُ فيكِ، فلا أنا أنا بعدَ ذا",
+"فأنا فنيتُ فيكِ، فلا أنا أنا بعدَ ذا",
   "ولا اسمي اسمي حينَ مرَّ نداكِ",
   "وهِمتُ بكِ حتى ما أميّز خافقي",
   "أأنا الذي أهواهُ أم أنتِ أنا؟"
@@ -374,12 +394,12 @@ setTimeout(()=>{
 let heartsInterval;
 
 /* التحول */
-smallHeartBtn.
-addEventListener("click",()=>{
+smallHeartBtn.addEventListener("click",()=>{
 
   const overlay=document.getElementById("overlay");
   const img=document.getElementById("loveImage");
   const heartsContainer=document.getElementById("floatingHeartsContainer");
+  const caption=document.getElementById("imageCaption");
 
   document.getElementById("stars").style.opacity=0;
   heart.style.opacity=0;
@@ -394,6 +414,11 @@ addEventListener("click",()=>{
     img.style.opacity=1;
     img.style.transform="scale(1)";
   },2500);
+
+  /* اظهار العبارة بعد ثانيتين من ظهور الصورة */
+  setTimeout(()=>{
+    caption.style.opacity=1;
+  },4500);
 
   heartsInterval=setInterval(()=>{
     let h=document.createElement("div");
@@ -412,11 +437,14 @@ document.getElementById("overlay").addEventListener("click",()=>{
   const overlay=document.getElementById("overlay");
   const img=document.getElementById("loveImage");
   const heartsContainer=document.getElementById("floatingHeartsContainer");
+  const caption=document.getElementById("imageCaption");
 
   img.style.opacity=0;
   img.style.transform="scale(0.9)";
   overlay.style.opacity=0;
   overlay.style.pointerEvents="none";
+
+  caption.style.opacity=0;
 
   document.getElementById("stars").style.opacity=1;
   heart.style.opacity=1;
