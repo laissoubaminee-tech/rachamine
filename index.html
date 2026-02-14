@@ -147,30 +147,26 @@ body{
   z-index:11;
 }
 
-/* ===== العبارة أسفل الصورة ===== */
-#imageCaption{
-  position:absolute;
-  top:calc(100% + 15px);
-  left:50%;
-  transform:translateX(-50%);
-  color:#ff1a4d;
-  font-size:14px;
-  font-weight:500;
-  text-align:center;
-  opacity:0;
-  z-index:12;
-  transition:opacity 2s ease;
+#imageCaption {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff1a4d;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0;
+  z-index: 12;
+  transition: opacity 2s ease;
+  animation: pulseGlow 2s infinite alternate;
+  margin-top: 10px;
 }
 
-@keyframes pulseGlow{
-  0%{opacity:1; text-shadow:0 0 2px #ff4d6e;}
-  50%{opacity:0.9; text-shadow:0 0 8px #ff4d6e;}
-  100%{opacity:1; text-shadow:0 0 2px #ff4d6e;}
-}
-
-.showCaption #imageCaption{
-  opacity:1;
-  animation:pulseGlow 2s infinite alternate;
+@keyframes pulseGlow {
+  0% { transform: translateX(-50%) scale(1); text-shadow: 0 0 6px #ff1a4d; }
+  50% { transform: translateX(-50%) scale(1.05); text-shadow: 0 0 12px #ff4d79; }
+  100% { transform: translateX(-50%) scale(1); text-shadow: 0 0 6px #ff1a4d; }
 }
 
 .floatingHeart{
@@ -204,16 +200,16 @@ body{
 
 <div id="overlay">
   <div id="floatingHeartsContainer"></div>
-  <img id="loveImage" src="my_photo.png">
-  <!-- إضافة العبارة أسفل الصورة -->
-  <div id="imageCaption">TV ES VII MINVTA MEA VLTIMA» أنتَ دقائقي السبع الأخيرة</div>
+  <div style="position: relative;">
+    <img id="loveImage" src="my_photo.png">
+    <div id="imageCaption">TV ES VII MINVTA MEA VLTIMA» أنتَ دقائقي السبع الأخيرة</div>
+  </div>
 </div>
 
 <script>
 
 /* تشغيل الموسيقى */
-const bgMusic = document.
-getElementById("bgMusic");
+const bgMusic = document.getElementById("bgMusic");
 window.addEventListener("load", () => {
   let playPromise = bgMusic.play();
   if (playPromise !== undefined) {
@@ -254,7 +250,8 @@ for(let i=0;i<totalWords;i++){
 
 let showRochty=true;
 setInterval(()=>{
-  words.forEach((obj,i)=>{
+  words.
+forEach((obj,i)=>{
     if(i%10===0){
       obj.el.innerText=showRochty?"روشتي":"أحبك";
       obj.el.style.color=showRochty?"#ff4da6":"#f7cde2";
@@ -313,6 +310,7 @@ smallHeartBtn.addEventListener("click",()=>{
   const overlay=document.getElementById("overlay");
   const img=document.getElementById("loveImage");
   const heartsContainer=document.getElementById("floatingHeartsContainer");
+  const caption=document.getElementById("imageCaption");
 
   document.getElementById("stars").style.opacity=0;
   heart.style.opacity=0;
@@ -326,11 +324,12 @@ smallHeartBtn.addEventListener("click",()=>{
   setTimeout(()=>{
     img.style.opacity=1;
     img.style.transform="scale(1)";
-    // اظهار العبارة بعد ثانيتين من ظهور الصورة
-    setTimeout(()=>{
-      overlay.classList.add('showCaption');
-    },2000);
   },2500);
+
+  /* اظهار العبارة بعد ثانيتين من ظهور الصورة */
+  setTimeout(()=>{
+    caption.style.opacity=1;
+  },4500);
 
   heartsInterval=setInterval(()=>{
     let h=document.createElement("div");
@@ -349,11 +348,14 @@ document.getElementById("overlay").addEventListener("click",()=>{
   const overlay=document.getElementById("overlay");
   const img=document.getElementById("loveImage");
   const heartsContainer=document.getElementById("floatingHeartsContainer");
+  const caption=document.getElementById("imageCaption");
 
   img.style.opacity=0;
   img.style.transform="scale(0.9)";
   overlay.style.opacity=0;
   overlay.style.pointerEvents="none";
+
+  caption.style.opacity=0;
 
   document.getElementById("stars").style.opacity=1;
   heart.style.opacity=1;
@@ -361,7 +363,6 @@ document.getElementById("overlay").addEventListener("click",()=>{
 
   clearInterval(heartsInterval);
   heartsContainer.innerHTML="";
-  overlay.classList.remove('showCaption');
 });
 
 </script>
