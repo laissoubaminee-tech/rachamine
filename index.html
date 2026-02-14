@@ -164,105 +164,77 @@ body{
 
 /* ===== مقدمة Intro Screen ===== */
 #introScreen {
-  position: fixed;
+  position:fixed;
   inset:0;
-  background: rgba(255,192,203,0.08);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 100;
-  backdrop-filter: blur(3px);
+  background:#ffdce6; /* وردي حليبي صلب */
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:100;
 }
 
 #introQuestion {
-  font-size: 2em;
-  color: #555;
-  font-weight: bold;
-  margin-bottom: 50px;
-  opacity: 0;
-  transform: translateY(-20px);
-  animation: fadeSlideIn 1.5s forwards;
+  font-size:36px;
+  color:#555555;
+  text-align:center;
+  opacity:0;
+  animation:fadeInUpGlow 1s forwards;
+  animation-delay:0.5s;
+  text-shadow:0 0 15px #fff;
 }
 
 #introAnswers {
-  display: flex;
-  gap: 50px;
-}
-
-.introBtn {
-  padding: 15px 35px;
-  font-size: 1.5em;
-  color: #ff0000;
-  background: rgba(255,0,0,0.1);
-  border: 2px solid rgba(255,0,0,0.3);
-  border-radius: 25px;
-  cursor: pointer;
-  text-shadow: 0 0 6px #ff4d4d;
-  opacity: 0.9;
-  transition: all 0.3s ease;
-  animation: tinyMove 2s infinite alternate;
-}
-
-.introBtn:hover {
-  box-shadow: 0 0 15px #ff0000, 0 0 25px #ff4d4d;
-  transform: scale(1.05);
-}
-
-@keyframes fadeSlideIn {
-  0% {opacity:0; transform: translateY(-20px);}
-  100% {opacity:1; transform: translateY(0);}
-}
-
-@keyframes tinyMove {
-  0% {transform: translateY(0);}
-50% {transform: translateY(-1px);}
-  100% {transform: translateY(0);}
-}
-
-/* ===== عبارة تحت الصورة ===== */
-#underText {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translate(-50%, 20px);
-  font-size: 14px;
-  color: #ff1a1a;
+  display:flex;
+  gap:40px;
+  margin-top:40px;
   opacity:0;
-  text-align:center;
-  text-shadow:0 0 5px #ff4d4d;
-  z-index:12;
-  animation: fadeInUnder 2s forwards;
-  animation-delay: 2.5s;
+  animation:fadeInUp 1s forwards;
+  animation-delay:1.5s;
 }
 
-@keyframes fadeInUnder {
-  0% {opacity:0; transform: translate(-50%, 30px);}
-  100% {opacity:1; transform: translate(-50%, 20px);}
+.introAnswerBtn {
+  padding:15px 25px;
+  font-size:24px;
+  color:#ff0000;
+  background:rgba(255,255,255,0.1);
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  text-shadow:0 0 10px #ff4d6e;
+  box-shadow:0 0 20px rgba(255,0,0,0.4);
+  animation:tinyPulse 2s infinite;
 }
 
-@keyframes pulseUnder {
-  0% {transform: translate(-50%, 20px) scale(1);}
-  50% {transform: translate(-50%, 20px) scale(1.05);}
-  100% {transform: translate(-50%, 20px) scale(1);}
+@keyframes fadeInUp {
+  0% {opacity:0; transform:translateY(20px);}
+  100% {opacity:1; transform:translateY(0);}
 }
-
+@keyframes fadeInUpGlow {
+  0% {opacity:0; transform:translateY(20px); text-shadow:0 0 0 #fff;}
+  100% {opacity:1; transform:translateY(0); text-shadow:0 0 15px #fff;}
+}
+@keyframes tinyPulse {
+  0%{transform:scale(1);}
+  50%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
 </style>
 </head>
 
 <body>
 
-<!-- مقدمة تفاعلية -->
+<!-- مقدمة Intro Screen -->
 <div id="introScreen">
   <div id="introQuestion">تحبيني؟!</div>
   <div id="introAnswers">
-    <button class="introBtn">نمووت عليك !!</button>
-    <button class="introBtn">نعشقك !!</button>
+    <button class="introAnswerBtn">نمووت عليك !!</button>
+    <button class="introAnswerBtn">نعشقك !!</button>
   </div>
 </div>
 
 <!-- 🎵 الموسيقى -->
-<audio id="bgMusic" autoplay loop>
+<audio id="bgMusic" loop>
   <source src="my_music.mp3" type="audio/mpeg">
 </audio>
 
@@ -274,13 +246,35 @@ body{
 <div id="overlay">
   <div id="floatingHeartsContainer"></div>
   <img id="loveImage" src="my_photo.png">
-  <div id="underText">TV ES VII MINVTA MEA VLTIMA» أنتَ دقائقي السبع الأخيرة</div>
 </div>
 
 <script>
 
-/* تشغيل الموسيقى */
+/* ===== مقدمة Intro Screen JS ===== */
+const introScreen = document.getElementById("introScreen");
+const introAnswers = document.querySelectorAll(".introAnswerBtn");
 const bgMusic = document.getElementById("bgMusic");
+
+introAnswers.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    // إخفاء المقدمة تدريجيًا
+    introScreen.style.transition="opacity 1s ease";
+    introScreen.style.opacity=0;
+    setTimeout(()=>{introScreen.style.display="none";},1000);
+
+    // تشغيل الموسيقى
+    let playPromise = bgMusic.play();
+    if(playPromise!==undefined){ playPromise.catch(()=>{}); }
+
+    // بعد اختيار الإجابة يبدأ كل شيء في الكود الأساسي
+    initMainPage();
+  });
+});
+
+/* ===== كل كودك الأصلي أصبح داخل هذه الدالة ===== */
+function initMainPage(){
+
+/* تشغيل الموسيقى (للتأكد) */
 window.addEventListener("load", () => {
   let playPromise = bgMusic.play();
   if (playPromise !== undefined) {
@@ -290,18 +284,6 @@ window.addEventListener("load", () => {
       }, { once: true });
     });
   }
-});
-
-/* مقدمة Intro Screen */
-const introScreen = document.getElementById("introScreen");
-const introBtns = document.querySelectorAll(".introBtn");
-introBtns.forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    if(bgMusic.paused) bgMusic.play();
-    introScreen.style.transition = "opacity 1s ease";
-    introScreen.style.opacity = 0;
-    setTimeout(()=>{ introScreen.style.display = "none"; }, 1000);
-  });
 });
 
 /* النجوم */
@@ -341,12 +323,11 @@ setInterval(()=>{
   });
   showRochty=!showRochty;
 },2000);
-
 function animateWords(){
   words.forEach(obj=>{
     obj.t+=speed;
     let x=16*Math.pow(Math.sin(obj.t),3);
-    let y=13*Math.cos(obj.t)-5*Math.cos(2*obj.t)-2*Math.cos(3*obj.t)-Math.cos(4*obj.t);
+    let y=13*Math.cos(obj.t)-5*Math.cos(2*obj.t)-2*Math.cos(3*Math.cos(obj.t))-Math.cos(4*obj.t);
     obj.el.style.left=(175+x*scale)+"px";
     obj.el.style.top=(175-y*scale)+"px";
   });
@@ -379,8 +360,7 @@ poemLines.forEach((line,idx)=>{
 });
 
 /* زر */
-const smallHeartBtn=document.
-getElementById("smallHeartBtn");
+const smallHeartBtn=document.getElementById("smallHeartBtn");
 setTimeout(()=>{
   smallHeartBtn.style.opacity=1;
 },poemLines.length*2000+3500);
@@ -394,7 +374,8 @@ smallHeartBtn.addEventListener("click",()=>{
   const img=document.getElementById("loveImage");
   const heartsContainer=document.getElementById("floatingHeartsContainer");
 
-  document.getElementById("stars").style.opacity=0;
+  document.
+getElementById("stars").style.opacity=0;
   heart.style.opacity=0;
   heart.style.transform="scale(0.8)";
 
@@ -406,12 +387,6 @@ smallHeartBtn.addEventListener("click",()=>{
   setTimeout(()=>{
     img.style.opacity=1;
     img.style.transform="scale(1)";
-    // ظهور العبارة تدريجيًا بعد ثانيتين من ظهور الصورة
-    const underText=document.getElementById("underText");
-    setTimeout(()=>{
-      underText.style.opacity=1;
-      underText.style.animation="pulseUnder 2s infinite";
-    },2000);
   },2500);
 
   heartsInterval=setInterval(()=>{
@@ -445,6 +420,7 @@ document.getElementById("overlay").addEventListener("click",()=>{
   heartsContainer.innerHTML="";
 });
 
+} // نهاية initMainPage()
 </script>
 </body>
 </html>
