@@ -193,7 +193,7 @@ body{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  z-index:1000; /* أعلى من كل شيء */
+  z-index:1000;
 }
 
 #introQuestion {
@@ -205,16 +205,13 @@ body{
   animation: fadeInSlide 1s forwards;
   animation-delay:0.5s;
   text-shadow:0 0 10px #fff;
-  animation-fill-mode:forwards;
-  animation-iteration-count:1;
 }
 
-.
-introAnswer {
+.introAnswer {
   font-size:1.5rem;
   color:#aa0000; /* أحمر دموي */
   padding:12px 20px;
-  border-radius:15px;
+border-radius:15px;
   border:2px solid rgba(255,255,255,0.3);
   cursor:pointer;
   opacity:0;
@@ -233,18 +230,12 @@ introAnswer {
   0% {opacity:0; transform:translateY(-20px);}
   100% {opacity:1; transform:translateY(0);}
 }
-
-@keyframes pulseGlowIntro{
-  0% {opacity:1; text-shadow:0 0 10px #fff;}
-  50% {opacity:0.85; text-shadow:0 0 25px #ffb3c6;}
-  100% {opacity:1; text-shadow:0 0 10px #fff;}
-}
 </style>
 </head>
 
 <body>
 
-<!-- ===== مقدمة Intro Screen ===== -->
+<!-- مقدمة Gatekeeper -->
 <div id="introScreen">
   <div id="introQuestion">تحبيني؟!</div>
   <div style="display:flex; gap:30px; margin-top:20px;">
@@ -272,188 +263,195 @@ introAnswer {
 </div>
 
 <script>
-/* ===== مقدمة Intro Screen Script ===== */
+/* ===== مقدمة Gatekeeper ===== */
 const introScreen = document.getElementById("introScreen");
 const introQuestion = document.getElementById("introQuestion");
 const answer1 = document.getElementById("answer1");
 const answer2 = document.getElementById("answer2");
-const bgMusic = document.getElementById("bgMusic"); // الموسيقى موجودة في الكود الأساسي
+const bgMusicEl = document.getElementById("bgMusic");
 
+let mainPageStarted = false;
+
+// دالة لبدء الشاشة الرئيسية بعد اختيار الإجابة
 function startMainPage() {
+  if(mainPageStarted) return;
+  mainPageStarted = true;
+
   // اخفاء المقدمة تدريجيًا
   introScreen.style.transition = "opacity 1s ease";
   introScreen.style.opacity = "0";
   setTimeout(()=>{ introScreen.style.display="none"; }, 1000);
 
   // تشغيل الموسيقى
-  bgMusic.play();
+  bgMusicEl.play();
 
-  // تشغيل كل شيء في الكود الأساسي بعد اختيار الإجابة
-  // هذا يترك الكود الأساسي كما هو دون أي تغيير
+  // تشغيل كل شيء من الكود الأساسي
+  initMainPage();
 }
 
-// عند الضغط على أي إجابة، تنطلق الشاشة الرئيسية
+// عند الضغط على أي إجابة
 answer1.addEventListener("click", startMainPage);
 answer2.addEventListener("click", startMainPage);
 
+/* ===== كود الشاشة الرئيسية (نقله داخل initMainPage) ===== */
+function initMainPage(){
 
-/* ===== كودك الأساسي يبدأ من هنا دون تغيير ===== */
-
-/* تشغيل الموسيقى */
-window.addEventListener("load", () => {
-  let playPromise = bgMusic.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(() => {
-      document.addEventListener("click", () => {
-        bgMusic.play();
-      }, { once: true });
-    });
-  }
-});
-
-/* النجوم */
-const starsContainer=document.getElementById("stars");
-for(let i=0;i<80;i++){
-  let star=document.createElement("div");
-  star.className="star";
-  star.style.left=Math.random()*100+"vw";
-  star.style.top=Math.random()*100+"vh";
-  star.style.animationDelay=(Math.random()*2)+"s";
-  starsContainer.appendChild(star);
-}
-
-/* كلمات القلب */
-const heart=document.getElementById("heart");
-
-const totalWords=120;
-const scale=11;
-const speed=0.004;
-let words=[];
-for(let i=0;i<totalWords;i++){
-  let t=(Math.PI*2)*(i/totalWords);
-  let span=document.createElement("span");
-  span.className="word";
-  span.innerText="أحبك";
-  heart.appendChild(span);
-  words.push({el:span,t:t});
-}
-
-let showRochty=true;
-setInterval(()=>{
-  words.forEach((obj,i)=>{
-    if(i%10===0){
-      obj.el.innerText=showRochty?"روشتي":"أحبك";
-      obj.el.style.color=showRochty?"#ff4da6":"#f7cde2";
+  /* تشغيل الموسيقى */
+  const bgMusic = document.getElementById("bgMusic");
+  window.addEventListener("load", () => {
+    let playPromise = bgMusic.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        document.addEventListener("click", () => {
+          bgMusic.play();
+        }, { once: true });
+      });
     }
   });
-  showRochty=!showRochty;
-},2000);
 
-function animateWords(){
-  words.forEach(obj=>{
-    obj.t+=speed;
-    let x=16*Math.pow(Math.sin(obj.t),3);
-    let y=13*Math.cos(obj.t)-5*Math.cos(2*obj.t)-2*Math.cos(3*obj.t)-Math.cos(4*obj.t);
-    obj.el.style.left=(175+x*scale)+"px";
-    obj.el.style.top=(175-y*scale)+"px";
-  });
-  requestAnimationFrame(animateWords);
-}
-animateWords();
+  /* النجوم */
+  const starsContainer=document.getElementById("stars");
+  for(let i=0;i<80;i++){
+    let star=document.createElement("div");
+    star.className="star";
+    star.style.left=Math.random()*100+"vw";
+    star.style.top=Math.random()*100+"vh";
+    star.style.animationDelay=(Math.random()*2)+"s";
+    starsContainer.appendChild(star);
+  }
 
-/* الأبيات */
-const poemLines=[
-  "أحببتكِ حبّا لو تُترجمين بعضُه",
-  "لذابت حدود الأرضِ في أنفاسي",
-"فأنا فنيتُ فيكِ، فلا أنا أنا بعدَ ذا",
-  "ولا اسمي اسمي حينَ مرَّ نداكِ",
-  "وهِمتُ بكِ حتى ما أميّز خافقي",
-  "أأنا الذي أهواهُ أم أنتِ أنا؟"
-];
+  /* كلمات القلب */
+  const heart=document.getElementById("heart");
 
-const innerPoemDiv=document.getElementById("innerPoem");
-poemLines.forEach((line,idx)=>{
-  setTimeout(()=>{
+  const totalWords=120;
+  const scale=11;
+  const speed=0.004;
+  let words=[];
+  for(let i=0;i<totalWords;i++){
+    let t=(Math.PI*2)*(i/totalWords);
     let span=document.createElement("span");
-    span.className="poemLineSpan";
-    span.innerText=line;
-    innerPoemDiv.appendChild(span);
+    span.className="word";
+    span.innerText="أحبك";
+    heart.appendChild(span);
+    words.push({el:span,t:t});
+  }
+
+  let showRochty=true;
+  setInterval(()=>{
+    words.forEach((obj,i)=>{
+      if(i%10===0){
+        obj.el.innerText=showRochty?"روشتي":"أحبك";
+        obj.el.style.color=showRochty?"#ff4da6":"#f7cde2";
+      }
+    });
+    showRochty=!showRochty;
+  },2000);
+
+  function animateWords(){
+    words.forEach(obj=>{
+      obj.t+=speed;
+      let x=16*Math.pow(Math.sin(obj.t),3);
+      let y=13*Math.cos(obj.t)-5*Math.cos(2*obj.t)-2*Math.cos(3*obj.t)-Math.cos(4*obj.t);
+      obj.el.style.left=(175+x*scale)+"px";
+      obj.el.style.top=(175-y*scale)+"px";
+    });
+    requestAnimationFrame(animateWords);
+  }
+  animateWords();
+
+  /* الأبيات */
+  const poemLines=[
+    "أحببتكِ حبّا لو تُترجمين بعضُه",
+    "لذابت حدود الأرضِ في أنفاسي",
+    "فأنا فنيتُ فيكِ، فلا أنا أنا بعدَ ذا",
+"ولا اسمي اسمي حينَ مرَّ نداكِ",
+    "وهِمتُ بكِ حتى ما أميّز خافقي",
+    "أأنا الذي أهواهُ أم أنتِ أنا؟"
+  ];
+
+  const innerPoemDiv=document.getElementById("innerPoem");
+  poemLines.forEach((line,idx)=>{
     setTimeout(()=>{
-      span.style.opacity=1;
-      span.style.filter="blur(0)";
-    },50);
-  },idx*2000+2000);
-});
+      let span=document.createElement("span");
+      span.className="poemLineSpan";
+      span.innerText=line;
+      innerPoemDiv.appendChild(span);
+      setTimeout(()=>{
+        span.style.opacity=1;
+        span.style.filter="blur(0)";
+      },50);
+    },idx*2000+2000);
+  });
 
-/* زر */
-const smallHeartBtn=document.getElementById("smallHeartBtn");
-setTimeout(()=>{
-  smallHeartBtn.style.opacity=1;
-},poemLines.length*2000+3500);
-
-let heartsInterval;
-
-/* التحول */
-smallHeartBtn.addEventListener("click",()=>{
-
-  const overlay=document.getElementById("overlay");
-  const img=document.getElementById("loveImage");
-  const heartsContainer=document.getElementById("floatingHeartsContainer");
-  const caption=document.getElementById("imageCaption");
-
-  document.getElementById("stars").style.opacity=0;
-  heart.style.opacity=0;
-  heart.style.transform="scale(0.8)";
-
+  /* زر */
+  const smallHeartBtn=document.getElementById("smallHeartBtn");
   setTimeout(()=>{
-    overlay.style.opacity=1;
-    overlay.style.pointerEvents="auto";
-  },1500);
+    smallHeartBtn.style.opacity=1;
+  },poemLines.length*2000+3500);
 
-  setTimeout(()=>{
-    img.style.opacity=1;
-    img.style.transform="scale(1)";
-  },2500);
+  let heartsInterval;
 
-  /* اظهار العبارة بعد ثانيتين من ظهور الصورة */
-  setTimeout(()=>{
-    caption.style.opacity=1;
-  },4500);
+  /* التحول */
+  smallHeartBtn.addEventListener("click",()=>{
 
-  heartsInterval=setInterval(()=>{
-    let h=document.createElement("div");
-    h.className="floatingHeart";
-    h.innerHTML="❤";
-    h.style.left=Math.random()*100+"vw";
-    h.style.animationDuration=(5+Math.random()*4)+"s";
-    heartsContainer.appendChild(h);
-    setTimeout(()=>{h.remove();},9000);
-  },350);
-});
+    const overlay=document.getElementById("overlay");
+    const img=document.getElementById("loveImage");
+    const heartsContainer=document.getElementById("floatingHeartsContainer");
+    const caption=document.getElementById("imageCaption");
 
-/* إغلاق عند لمس الشاشة */
-document.getElementById("overlay").addEventListener("click",()=>{
+    document.getElementById("stars").style.opacity=0;
+    heart.style.opacity=0;
+    heart.style.transform="scale(0.8)";
 
-  const overlay=document.getElementById("overlay");
-  const img=document.getElementById("loveImage");
-  const heartsContainer=document.getElementById("floatingHeartsContainer");
-  const caption=document.getElementById("imageCaption");
+    setTimeout(()=>{
+      overlay.style.opacity=1;
+      overlay.style.pointerEvents="auto";
+    },1500);
 
-  img.style.opacity=0;
-  img.style.transform="scale(0.9)";
-  overlay.style.opacity=0;
-  overlay.style.pointerEvents="none";
+    setTimeout(()=>{
+      img.style.opacity=1;
+      img.style.transform="scale(1)";
+    },2500);
 
-  caption.style.opacity=0;
+    /* اظهار العبارة بعد ثانيتين من ظهور الصورة */
+    setTimeout(()=>{
+      caption.style.opacity=1;
+    },4500);
 
-  document.getElementById("stars").style.opacity=1;
-  heart.style.opacity=1;
-  heart.style.transform="scale(1)";
+    heartsInterval=setInterval(()=>{
+      let h=document.createElement("div");
+      h.className="floatingHeart";
+      h.innerHTML="❤";
+      h.style.left=Math.random()*100+"vw";
+      h.style.animationDuration=(5+Math.random()*4)+"s";
+      heartsContainer.appendChild(h);
+      setTimeout(()=>{h.remove();},9000);
+    },350);
+  });
 
-  clearInterval(heartsInterval);
-  heartsContainer.innerHTML="";
-});
+  /* إغلاق عند لمس الشاشة */
+  document.getElementById("overlay").addEventListener("click",()=>{
 
+    const overlay=document.getElementById("overlay");
+    const img=document.getElementById("loveImage");
+    const heartsContainer=document.getElementById("floatingHeartsContainer");
+    const caption=document.getElementById("imageCaption");
+
+    img.style.opacity=0;
+    img.style.transform="scale(0.9)";
+    overlay.style.opacity=0;
+    overlay.style.pointerEvents="none";
+
+    caption.style.opacity=0;
+
+    document.getElementById("stars").style.opacity=1;
+    heart.style.opacity=1;
+    heart.style.transform="scale(1)";
+
+    clearInterval(heartsInterval);
+    heartsContainer.innerHTML="";
+  });
+}
 </script>
 </body>
 </html>
